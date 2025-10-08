@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import { socket } from "../socket/connection";
+import Header from "../components/Header/Header";
+import Navbar from "../components/Navbar/Navbar";
 
 const MainPage = () => {
   const [text, setText] = useState("");
@@ -22,7 +24,8 @@ const MainPage = () => {
 
   return (
     <div>
-      <h1>Collaborative input test</h1>
+      <Header></Header>
+      <Navbar></Navbar>
       <input
         type="text"
         value={text}
