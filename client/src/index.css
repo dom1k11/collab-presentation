@@ -1,0 +1,21 @@
+:root {
+  --color-bg: #f8f9fa;
+  --color-text: #212529;
+  --color-primary: #0d6efd;
+  --color-border: #dee2e6;
+  --font-main: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial,
+    sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-main);
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--color-text);
+  background-color: var(--color-bg);
+}
