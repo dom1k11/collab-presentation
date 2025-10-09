@@ -1,15 +1,17 @@
+import { useNavigate } from "react-router-dom";
 import "./Header.css";
 
 export const Header = () => {
+  const navigate = useNavigate();
   const nickname = localStorage.getItem("nickname");
 
   const handleLogout = () => {
     localStorage.removeItem("nickname");
-    window.location.href = "/";
+    navigate("/");
   };
 
   const handleGoHome = () => {
-    window.location.href = "/main";
+    navigate("/main");
   };
 
   return (
