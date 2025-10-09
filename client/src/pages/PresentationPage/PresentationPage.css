@@ -1,0 +1,28 @@
+
+.room-title {
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.slide-input-group input {
+  flex: 1;
+}
+
+.slides-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.slide-item {
+  padding: 0.6rem 1rem;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  background-color: #f8f9fa;
+  white-space: pre-wrap;
+}
+
+.no-slides {
+  color: #6c757d;
+  font-style: italic;
+}

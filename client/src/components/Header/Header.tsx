@@ -1,8 +1,30 @@
-import "./Header.css"
+import "./Header.css";
+
 export const Header = () => {
+  const nickname = localStorage.getItem("nickname");
+
+  const handleLogout = () => {
+    localStorage.removeItem("nickname");
+    window.location.href = "/";
+  };
+
+  const handleGoHome = () => {
+    window.location.href = "/main";
+  };
+
   return (
     <header className="app-header">
-      <h1>Collab presentation</h1>
+      <h1 className="app-title">Collab Presentation</h1>
+
+      <div className="user-section">
+        <button className="btn btn-warning" onClick={handleGoHome}>
+          Home
+        </button>
+        <span className="user-name">👤 {nickname || "Guest"}</span>
+        <button className="btn btn-danger" onClick={handleLogout}>
+          Logout
+        </button>
+      </div>
     </header>
   );
 };
