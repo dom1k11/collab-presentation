@@ -9,16 +9,20 @@ export default function MainPage() {
   const [rooms, setRooms] = useState<Room[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const handleRooms = (serverRooms: Room[]) => {
-      setRooms(serverRooms);
-      setLoading(false);
-    };
-    socket.on("rooms-list", handleRooms);
-    socket.emit("get-rooms");
+ useEffect(() => {
+  const handleRooms = (serverRooms: Room[]) => {
+    setRooms(serverRooms);
+    setLoading(false);
+  };
 
-    return () => socket.off("rooms-list", handleRooms);
-  }, []);
+  socket.on("rooms-list", handleRooms);
+  socket.emit("get-rooms");
+
+  return () => {
+    socket.off("rooms-list", handleRooms);
+  };
+}, []);
+
 
   return (
     <div className="container mt-4">
