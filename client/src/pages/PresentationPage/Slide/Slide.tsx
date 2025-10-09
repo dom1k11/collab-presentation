@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./Slide.css";
 
 type SlideProps = {
@@ -6,17 +6,24 @@ type SlideProps = {
   onEdit: (id: string, newContent: string) => void;
 };
 
-export const Slide = ({ slide, onEdit }: SlideProps) => {
+const Slide = ({ slide, onEdit }: SlideProps) => {
   const ref = useRef<HTMLDivElement>(null);
+  const [localContent, setLocalContent] = useState(slide.content);
 
+  // 🔹 синхронизируем только если пришёл другой контент с сервера
   useEffect(() => {
-    if (ref.current && ref.current.innerText !== slide.content) {
-      ref.current.innerText = slide.content;
+    if (slide.content !== localContent) {
+      setLocalContent(slide.content);
+      if (ref.current && ref.current.innerText !== slide.content) {
+        ref.current.innerText = slide.content;
+      }
     }
   }, [slide.content]);
 
+  // 🔹 при вводе обновляем локальный текст и уведомляем родителя
   const handleInput = () => {
     const newText = ref.current?.innerText ?? "";
+    setLocalContent(newText);
     onEdit(slide.id, newText);
   };
 
@@ -27,6 +34,7 @@ export const Slide = ({ slide, onEdit }: SlideProps) => {
       contentEditable
       suppressContentEditableWarning
       onInput={handleInput}
+      spellCheck={false}
     />
   );
 };
