@@ -1,8 +1,8 @@
 import { Server, Socket } from "socket.io";
 
+type Slide = { id: string; content: string };
 const rooms = ["Task 1", "Web", "C#"];
-
-const roomSlides: Record<string, string[]> = {};
+const roomSlides: Record<string, Slide[]> = {};
 
 export function registerRoomSocket(io: Server) {
   io.on("connection", (socket: Socket) => {
@@ -29,17 +29,25 @@ export function registerRoomSocket(io: Server) {
       console.log(`📂 ${socket.id} joined room: ${roomId}`);
 
       if (!roomSlides[roomId]) roomSlides[roomId] = [];
-
       socket.emit("room-update", roomSlides[roomId]);
     });
 
+    socket.on("add-slide", ({ roomId, slide }: { roomId: string; slide: Slide }) => {
+      if (!rooms.includes(roomId)) return;
+      if (!roomSlides[roomId]) roomSlides[roomId] = [];
+      roomSlides[roomId].push(slide);
+      io.to(roomId).emit("room-update", roomSlides[roomId]);
+      console.log(`➕ Added new slide in ${roomId}: ${slide.id}`);
+    });
+
     socket.on(
-      "room-change",
-      ({ roomId, content }: { roomId: string; content: string[] }) => {
-        if (!rooms.includes(roomId)) return;
-        roomSlides[roomId] = content;
-        console.log(`📝 Updated ${roomId}:`, content);
-        socket.to(roomId).emit("room-update", content);
+      "slide-update",
+      ({ roomId, id, content }: { roomId: string; id: string; content: string }) => {
+        const slides = roomSlides[roomId];
+        if (!slides) return;
+        const updated = slides.map((s) => (s.id === id ? { ...s, content } : s));
+        roomSlides[roomId] = updated;
+        socket.to(roomId).emit("slide-updated", { id, content });
       }
     );
 

@@ -2,60 +2,64 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { socket } from "../../socket/connection";
 import Header from "../../components/Header/Header";
+import Slide from "./Slide/Slide";
 import "./PresentationPage.css";
+
+type SlideType = { id: string; content: string };
 
 export default function PresentationPage() {
   const { id: roomId } = useParams();
-  const [slides, setSlides] = useState<string[]>([]);
-  const [text, setText] = useState("");
+  const [slides, setSlides] = useState<SlideType[]>([]);
 
   useEffect(() => {
     if (!roomId) return;
 
     socket.emit("join-room", roomId);
-    socket.on("room-update", (newSlides: string[]) => setSlides(newSlides));
+    socket.on("room-update", (newSlides: SlideType[]) => setSlides(newSlides));
+
+    socket.on("slide-updated", ({ id, content }) => {
+      setSlides((prev) =>
+        prev.map((s) => (s.id === id ? { ...s, content } : s))
+      );
+    });
 
     return () => {
       socket.off("room-update");
+      socket.off("slide-updated");
       socket.emit("leave-room", roomId);
     };
   }, [roomId]);
 
   const handleAddSlide = () => {
-    if (!roomId || !text.trim()) return;
-    const updated = [...slides, text.trim()];
+    if (!roomId) return;
+    const newSlide = { id: crypto.randomUUID(), content: "" };
+    const updated = [...slides, newSlide];
     setSlides(updated);
-    setText("");
-    socket.emit("room-change", { roomId, content: updated });
+    socket.emit("add-slide", { roomId, slide: newSlide });
+  };
+
+  const handleEditSlide = (id: string, newContent: string) => {
+    setSlides((prev) =>
+      prev.map((s) => (s.id === id ? { ...s, content: newContent } : s))
+    );
+    if (roomId) socket.emit("slide-update", { roomId, id, content: newContent });
   };
 
   return (
     <div className="presentation-page container mt-4">
       <Header />
-
       <h3 className="room-title">Presentation: {roomId}</h3>
 
-      <div className="slide-input-group d-flex gap-2 mt-3">
-        <input
-          type="text"
-          className="form-control"
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          placeholder="Write your slide text..."
-        />
-        <button className="btn btn-success" onClick={handleAddSlide}>
-          ➕ Add
-        </button>
-      </div>
+      <button className="btn btn-success mb-3" onClick={handleAddSlide}>
+        ➕ New Slide
+      </button>
 
-      <div className="slides-list mt-4">
+      <div className="slides-list">
         {slides.length === 0 ? (
           <p className="no-slides">No slides yet.</p>
         ) : (
-          slides.map((slide, i) => (
-            <p key={i} className="slide-item">
-              {slide}
-            </p>
+          slides.map((slide) => (
+            <Slide key={slide.id} slide={slide} onEdit={handleEditSlide} />
           ))
         )}
       </div>
