@@ -1,0 +1,28 @@
+nav.toolbar {
+  padding: 0.5rem 1rem;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  background-color: rgb(248, 244, 244);
+  border-bottom: 1px solid #ddd;
+  height: 72px;
+  margin-bottom: 1rem;
+}
+
+.toolbar-group {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.btn.btn-primary {
+  border: none;
+  padding: 0.4rem 1rem;
+  font-size: 0.9rem;
+  border-radius: 6px;
+  transition: background 0.2s;
+}
+
+.btn.btn-primary:hover {
+  background-color: #218838;
+}

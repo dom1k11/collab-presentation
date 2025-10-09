@@ -3,20 +3,19 @@ import { useSlides } from "./useSlides";
 import Header from "../../components/Header/Header";
 import Slide from "./Slide/Slide";
 import "./PresentationPage.css";
+import Toolbar from "./Toolbar/Toolbar";
 
 export default function PresentationPage() {
   const { id: roomId } = useParams();
-  const { slides, addSlide, editSlide } = useSlides(roomId);
+  const { slides, editSlide } = useSlides(roomId);
 
   return (
     <div className="presentation-page container mt-4">
       <Header />
-
+      <Toolbar></Toolbar>
       <div className="presentation-header">
         <h3 className="room-title">Presentation: {roomId}</h3>
-        <button className="btn btn-success" onClick={addSlide}>
-          ➕ New Slide
-        </button>
+        
       </div>
 
       <div className="slides-list">
