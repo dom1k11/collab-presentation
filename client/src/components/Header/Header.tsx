@@ -16,12 +16,14 @@ export const Header = () => {
 
   return (
     <header className="app-header">
-      <h1 className="app-title">Collab Presentation</h1>
-
-      <div className="user-section">
+      <div className="header-left">
         <button className="btn btn-warning" onClick={handleGoHome}>
           Home
         </button>
+        <h1 className="app-title">Collab Presentation</h1>
+      </div>
+
+      <div className="header-right">
         <span className="user-name">👤 {nickname || "Guest"}</span>
         <button className="btn btn-danger" onClick={handleLogout}>
           Logout
